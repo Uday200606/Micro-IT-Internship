@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Stopwatch & Clock</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      margin-top: 100px;
+    }
+    #clock {
+      font-size: 24px;
+      margin-bottom: 20px;
+    }
+    #stopwatch {
+      font-size: 48px;
+      margin: 20px 0;
+    }
+    button {
+      padding: 10px 20px;
+      margin: 10px;
+      font-size: 16px;
+    }
+  </style>
+</head>
+<body>
+
+  <div id="clock">Current Time: --:--:--</div>
+  <div id="stopwatch">00:00:00</div>
+
+  <button onclick="startStopwatch()">Start</button>
+  <button onclick="stopStopwatch()">Stop</button>
+  <button onclick="resetStopwatch()">Reset</button>
+
+  <script>
+    // Clock Update
+    function updateClock() {
+      const now = new Date();
+      const time = now.toLocaleTimeString();
+      document.getElementById("clock").textContent = "Current Time: " + time;
+    }
+    setInterval(updateClock, 1000);
+    updateClock();
+
+    // Stopwatch Logic
+    let startTime = null;
+    let elapsedTime = 0;
+    let running = false;
+    let timerInterval;
+
+    function updateStopwatchDisplay(time) {
+      const hours = String(Math.floor(time / 3600000)).padStart(2, '0');
+      const minutes = String(Math.floor((time % 3600000) / 60000)).padStart(2, '0');
+      const seconds = String(Math.floor((time % 60000) / 1000)).padStart(2, '0');
+      document.getElementById("stopwatch").textContent = `${hours}:${minutes}:${seconds}`;
+    }
+
+    function startStopwatch() {
+      if (!running) {
+        running = true;
+        startTime = Date.now() - elapsedTime;
+        timerInterval = setInterval(() => {
+          elapsedTime = Date.now() - startTime;
+          updateStopwatchDisplay(elapsedTime);
+        }, 100);
+      }
+    }
+
+    function stopStopwatch() {
+      if (running) {
+        running = false;
+        clearInterval(timerInterval);
+      }
+    }
+
+    function resetStopwatch() {
+      running = false;
+      clearInterval(timerInterval);
+      elapsedTime = 0;
+      updateStopwatchDisplay(0);
+    }
+  </script>
+</body>
+</html>
